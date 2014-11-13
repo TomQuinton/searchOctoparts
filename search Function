@@ -1,0 +1,146 @@
+Imports Newtonsoft.Json
+Imports RestSharp
+Imports System
+
+Public Module searchFunction
+
+    Public Function searchOctoparts(query As String, apiKey As String) As Part
+        Dim urlBase As String = "http://octopart.com/api/v3"
+        Dim urlEnd As String = "parts/search"
+        Dim client = New RestClient(urlBase)
+        Dim req = New RestRequest(urlEnd, Method.GET) _
+                        .AddParameter("apikey", apiKey) _
+                        .AddParameter("q", query) _
+                        .AddParameter("start", "0") _
+                        .AddParameter("limit", "100")
+        Dim searchGet = client.Execute(req)
+        Dim searchReturn = JsonConvert.DeserializeObject(Of Part)(searchGet.Content)
+        'Dim results As List(Of Part) = searchReturn.Children().ToList
+        'Dim results As Part = JsonConvert.DeserializeObject(Of Part)(searchGet.Content)
+        Return (searchReturn)
+    End Function
+    Public Class Fields
+    End Class
+
+    Public Class Queries
+    End Class
+
+    Public Class FacetResults
+        Public Property fields As Fields
+        Public Property queries As Queries
+    End Class
+
+    Public Class Fields2
+    End Class
+
+    Public Class Facet
+        Public Property fields As Fields2
+        Public Property queries As Object()
+    End Class
+
+    Public Class Fields3
+    End Class
+
+    Public Class Filter
+        Public Property fields As Fields3
+        Public Property queries As Object()
+    End Class
+
+    Public Class Stats
+    End Class
+
+    Public Class Request
+        Public Property __class__ As String
+        Public Property facet As Facet
+        Public Property filter As Filter
+        Public Property limit As Integer
+        Public Property q As String
+        Public Property sortby As String
+        Public Property start As Integer
+        Public Property stats As Stats
+    End Class
+
+    Public Class Brand
+        Public Property __class__ As String
+        Public Property homepage_url As String
+        Public Property name As String
+        Public Property uid As String
+    End Class
+
+    Public Class Manufacturer
+        Public Property __class__ As String
+        Public Property homepage_url As String
+        Public Property name As String
+        Public Property uid As String
+    End Class
+
+    Public Class Prices
+        Public Property GBP As Object()()
+        Public Property EUR As Object()()
+        Public Property USD As Object()()
+        Public Property SGD As Object()()
+    End Class
+
+    Public Class Seller
+        Public Property __class__ As String
+        Public Property display_flag As String
+        Public Property has_ecommerce As Boolean
+        Public Property homepage_url As String
+        Public Property name As String
+        Public Property uid As String
+    End Class
+
+    Public Class Offer
+        Public Property __class__ As String
+        Public Property eligible_region As String
+        Public Property factory_lead_days As Integer?
+        Public Property factory_order_multiple As Integer?
+        Public Property in_stock_quantity As Integer
+        Public Property is_authorized As Boolean
+        Public Property last_updated As DateTime
+        Public Property moq As Integer?
+        Public Property octopart_rfq_url As String
+        Public Property on_order_eta As DateTime?
+        Public Property on_order_quantity As Integer?
+        Public Property order_multiple As Integer?
+        Public Property packaging As String
+        Public Property prices As Prices
+        Public Property product_url As String
+        Public Property seller As Seller
+        Public Property sku As String
+    End Class
+
+    Public Class Item
+        Public Property __class__ As String
+        Public Property brand As Brand
+        Public Property manufacturer As Manufacturer
+        Public Property mpn As String
+        Public Property octopart_url As String
+        Public Property offers As Offer()
+        Public Property uid As String
+        Public Property uid_v2 As Object
+    End Class
+
+    Public Class Result
+        Public Property __class__ As String
+        Public Property item As Item
+        Public Property snippet As String
+    End Class
+
+    Public Class SpecMetadata
+    End Class
+
+    Public Class StatsResults
+    End Class
+
+    Public Class Part
+        Public Property __class__ As String
+        Public Property facet_results As FacetResults
+        Public Property hits As Integer
+        Public Property msec As Integer
+        Public Property request As Request
+        Public Property results As Result()
+        Public Property spec_metadata As SpecMetadata
+        Public Property stats_results As StatsResults
+    End Class
+End Module
